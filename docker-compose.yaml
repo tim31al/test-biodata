@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  webserver:
+    container_name: webserver
+    build:
+      args:
+        UID: ${SERVER_UID}
+        USER: ${SERVER_USER}
+        GID: ${SERVER_GID}
+        GROUP: ${SERVER_GROUP}
+      context: docker/nginx
+    image: atimofeev/webserver-biodata
+    working_dir: ${WORKDIR}
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - app
+    volumes:
+      - ./code:${WORKDIR}
+      - sock:${SOCKET_DIR}
+
+  app:
+    container_name: app
+    build:
+      args:
+        UID: ${SERVER_UID}
+        USER: ${SERVER_USER}
+        GID: ${SERVER_GID}
+        GROUP: ${SERVER_GROUP}
+      context: docker/fpm
+    image: atimofeev/php-fpm-mysite
+    env_file:
+      - .env
+    working_dir: ${WORKDIR}
+    volumes:
+      - ./code:${WORKDIR}
+      - sock:${SOCKET_DIR}
+
+  db:
+    image: mysql:5.7.22
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    container_name: ${MYSQL_HOST}
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+
+volumes:
+  sock:
