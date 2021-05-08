@@ -4,6 +4,8 @@
 namespace common\models;
 
 
+use yii\db\ActiveRecord;
+
 /**
  * Bonus model
  *
@@ -11,7 +13,7 @@ namespace common\models;
  * @property integer $limit
  * @property integer $available
  */
-class BonusLimits extends \yii\db\ActiveRecord
+class BonusLimits extends ActiveRecord implements BonusLimitInterface
 {
     /**
      * {@inheritdoc}
@@ -21,7 +23,7 @@ class BonusLimits extends \yii\db\ActiveRecord
         return '{{%bonus_limits}}';
     }
 
-    public function decrement(): self
+    public function decrementLimit(): self
     {
         if (null === $this->available) {
             return $this;
@@ -29,6 +31,7 @@ class BonusLimits extends \yii\db\ActiveRecord
 
         $this->available = $this->available - 1;
         $this->save();
+
         return $this;
     }
 

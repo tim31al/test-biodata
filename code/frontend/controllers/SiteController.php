@@ -1,8 +1,8 @@
 <?php
 namespace frontend\controllers;
 
-use common\models\Bonus;
 use common\models\FbUser;
+use frontend\services\BonusServiceInterface;
 use Yii;
 use yii\authclient\clients\Facebook;
 use yii\web\Controller;
@@ -87,6 +87,7 @@ class SiteController extends Controller
     /**
      * Displays user profile.
      * @return mixed
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionProfile()
     {
@@ -94,7 +95,10 @@ class SiteController extends Controller
         $user = Yii::$app->user->identity;
 
         if (Yii::$app->request->getQueryParam('getBonus') && !$user->bonus) {
-            $bonus = Bonus::giveRandomBonus();
+            /* @var BonusServiceInterface $bonusService */
+            $bonusService = Yii::$app->get(BonusServiceInterface::class);
+            $bonus = $bonusService->getRandomBonus();
+
             $user->setBonus($bonus);
         }
 

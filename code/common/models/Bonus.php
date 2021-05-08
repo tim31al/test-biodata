@@ -13,7 +13,7 @@ use yii\db\ActiveRecord;
  * @property integer $id
  * @property string $title
  */
-class Bonus extends ActiveRecord
+class Bonus extends ActiveRecord implements BonusInterface
 {
     /**
      * {@inheritdoc}
@@ -23,7 +23,10 @@ class Bonus extends ActiveRecord
         return '{{%bonus}}';
     }
 
-    public static function findAvailable(): array
+    /**
+     * @return self[]
+     */
+    public function findAvailable(): array
     {
         return static::find()
             ->joinWith('limit')
@@ -31,18 +34,6 @@ class Bonus extends ActiveRecord
             ->orWhere(['available' => null])
             ->all();
     }
-
-     public static function giveRandomBonus(): self
-     {
-         $bonuses = self::findAvailable();
-         $count = count($bonuses) - 1;
-         $index = rand(0, $count);
-
-         $bonus = $bonuses[$index];
-         $bonus->limit->decrement();
-
-         return $bonus;
-     }
 
     public function getLimit(): ActiveQuery
     {
@@ -55,4 +46,8 @@ class Bonus extends ActiveRecord
         return $this->title;
     }
 
+    public function getBonusLimit(): BonusLimitInterface
+    {
+        return $this->limit;
+    }
 }

@@ -1,4 +1,11 @@
 <?php
+
+use common\models\Bonus;
+
+use common\models\BonusInterface;
+use frontend\services\BonusService;
+use frontend\services\BonusServiceInterface;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -21,7 +28,6 @@ return [
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
         'session' => [
-            // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
         ],
         'log' => [
@@ -50,7 +56,13 @@ return [
                 ],
             ],
         ],
-
+        BonusInterface::class => function() {
+            return new Bonus;
+        },
+        BonusServiceInterface::class => function() {
+            $bonus = Yii::$app->get(BonusInterface::class);
+            return new BonusService($bonus);
+        }
     ],
     'params' => $params,
 ];
