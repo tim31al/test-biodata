@@ -13,7 +13,7 @@ use yii\db\ActiveRecord;
  * @property integer $limit
  * @property integer $available
  */
-class BonusLimits extends ActiveRecord implements BonusLimitInterface
+class BonusLimits extends ActiveRecord implements BonusLimitsInterface
 {
     /**
      * {@inheritdoc}
@@ -23,10 +23,14 @@ class BonusLimits extends ActiveRecord implements BonusLimitInterface
         return '{{%bonus_limits}}';
     }
 
-    public function decrementLimit(): self
+    public function decrementAvailable(): self
     {
         if (null === $this->available) {
             return $this;
+        }
+
+        if (0 === $this->available) {
+            throw new \InvalidArgumentException('Bad bonus');
         }
 
         $this->available = $this->available - 1;

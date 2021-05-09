@@ -188,8 +188,12 @@ class FbUser extends ActiveRecord implements IdentityInterface
         return $this->hasOne(Bonus::class, ['id' => 'bonus_id']);
     }
 
-    public function setBonus(Bonus $bonus): self
+    public function setBonus(?Bonus $bonus): self
     {
+        if (!$bonus) {
+            return $this;
+        }
+
         $this->link('bonus', $bonus);
         return $this;
     }

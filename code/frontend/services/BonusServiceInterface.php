@@ -7,5 +7,5 @@ use common\models\Bonus;
 
 interface BonusServiceInterface
 {
-    public function getRandomBonus(): Bonus;
+    public function getRandomBonus(): ?Bonus;
 }

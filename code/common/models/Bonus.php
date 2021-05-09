@@ -46,7 +46,7 @@ class Bonus extends ActiveRecord implements BonusInterface
         return $this->title;
     }
 
-    public function getBonusLimit(): BonusLimitInterface
+    public function getBonusLimit(): BonusLimitsInterface
     {
         return $this->limit;
     }

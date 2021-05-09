@@ -10,5 +10,5 @@ interface BonusInterface
      * @return Bonus[]
      */
     public function findAvailable(): array;
-    public function getBonusLimit(): BonusLimitInterface;
+    public function getBonusLimit(): BonusLimitsInterface;
 }
